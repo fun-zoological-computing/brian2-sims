@@ -10,8 +10,7 @@ RUN python -c "import brian2"
 COPY . .
 USER $MAMBA_USER
 RUN python run_simulation.py -h
-Run curl -fsSL https://install.julialang.org | sh -s -- -y
-
+RUN curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN source "/home/mambauser/.bashrc"
 RUN source "/home/mambauser/.profile"
 ENV PATH="/home/mambauser/.juliaup/bin/julia":$PATH
