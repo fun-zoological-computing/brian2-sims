@@ -14,3 +14,6 @@ RUN python run_simulation.py -h
 Run curl -fsSL https://install.julialang.org | sh
 RUN julia -c "using Pkg;"
 RUN python run_simulation.py --quiet --backend cpp_standalone models
+WORKDIR julia_read_dir
+RUN cat *
+RUN ls & echo "HacktoShowLSresults"
