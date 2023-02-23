@@ -15,7 +15,9 @@ RUN source "/home/mambauser/.bashrc"
 RUN source "/home/mambauser/.profile"
 ENV PATH="/home/mambauser/.juliaup/bin/julia":$PATH
 RUN ls & echo "HacktoShowLSresults"
-RUN /home/mambauser/.juliaup/bin/julia -c 'using Pkg;Pkg.add("UnicodePlots")'
+#RUN julia --color=yes -e "using Pkg;"
+
+RUN /home/mambauser/.juliaup/bin/julia -color=yes -e  'using Pkg;Pkg.add("UnicodePlots")'
 RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
 RUN cat *
