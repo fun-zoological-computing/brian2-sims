@@ -8,10 +8,8 @@ from simulations.balanced_network import balanced_network
 import os
 from datetime import datetime
 
-#import git
 import sys
 sys.path.extend(os.getcwd())
-#sys.path.extend([git.Repo('.').git.rev_parse('--show-toplevel')])
 
 import argparse
 from brian2 import DEFAULT_FUNCTIONS, prefs, set_device, ms
@@ -29,9 +27,9 @@ parser = argparse.ArgumentParser(
     description='Main file that executes specified simulation',
 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-default=f"""{datetime.now().strftime('%Y.%m.%d')}"""
-                        f"""_{datetime.now().hour}."""
-                        f"""{datetime.now().minute}/""",
+#default=f"""{datetime.now().strftime('%Y.%m.%d')}"""
+#                        f"""_{datetime.now().hour}."""
+#                        f"""{datetime.now().minute}/""",
 
 parser.add_argument('--save_path',
                     type=str,
