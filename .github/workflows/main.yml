@@ -1,17 +1,7 @@
-name: Conda nightly tests
+name: mamba nightly tests
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 10 * * 0'
-
-permissions:
-  contents: read
-  issues: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 
 defaults:
   run:
@@ -41,21 +31,7 @@ jobs:
           key: ${{ github.job }}-${{ matrix.os }}
           restore-keys: |
             libmamba_static-${{ matrix.os }}
-      - name: build libmamba Python bindings
-        run: |
-          cd mamba
-          mkdir build
-          cd build
-          cmake .. -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-                   -DBUILD_LIBMAMBAPY=ON \
-                   -DBUILD_LIBMAMBA=ON \
-                   -DBUILD_SHARED=ON \
-                   -DBUILD_MAMBA_PACKAGE=ON \
-                   -DCMAKE_CXX_COMPILER_LAUNCHER=sccache \
-                   -DCMAKE_C_COMPILER_LAUNCHER=sccache \
-                   -GNinja
-          ninja
-          ninja install
+
       - name: install libmambapy
         run: |
           cd mamba
@@ -65,7 +41,7 @@ jobs:
       - name: install mamba
         run: |
           cd mamba
-          pip install ./mamba[test] --no-deps
+          pip install ./mamba --no-deps
       # Test Mamba with Conda nightly
       - name: run mamba tests suite
         run: |
