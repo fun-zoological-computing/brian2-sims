@@ -15,10 +15,8 @@ Run curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN source "/home/mambauser/.bashrc"
 RUN source "/home/mambauser/.profile"
 ENV PATH="/home/mambauser/.juliaup/bin/julia":$PATH
-RUN source $PATH
-RUN echo $PATH & echo "HacktoShowLSresults"
 RUN ls & echo "HacktoShowLSresults"
-RUN julia -c 'using Pkg;Pkg.add("UnicodePlots")'
+RUN /home/mambauser/.juliaup/bin/julia -c 'using Pkg;Pkg.add("UnicodePlots")'
 RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
 RUN cat *
