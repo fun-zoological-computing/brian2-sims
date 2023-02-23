@@ -27,12 +27,15 @@ DEFAULT_FUNCTIONS.update({'stochastic_decay': stochastic_decay,
 
 parser = argparse.ArgumentParser(
     description='Main file that executes specified simulation',
-    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+default=f"""{datetime.now().strftime('%Y.%m.%d')}"""
+                        f"""_{datetime.now().hour}."""
+                        f"""{datetime.now().minute}/""",
+
 parser.add_argument('--save_path',
                     type=str,
-                    default=f"""{datetime.now().strftime('%Y.%m.%d')}"""
-                            f"""_{datetime.now().hour}."""
-                            f"""{datetime.now().minute}/""",
+                    default="julia_read_dir",                  
                     help=f'directory to save, creating folder and overwriting '
                          f'existing ones. Defaults to datetime name.')
 parser.add_argument('--code_path',
