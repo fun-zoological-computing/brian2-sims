@@ -11,7 +11,7 @@ RUN python -c "import brian2"
 COPY . .
 USER $MAMBA_USER
 RUN python run_simulation.py -h
-Run curl -fsSL https://install.julialang.org | sh -s -y
+Run curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN julia -c "using Pkg;"
 RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
