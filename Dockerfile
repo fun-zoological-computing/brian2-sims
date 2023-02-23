@@ -13,9 +13,11 @@ RUN python run_simulation.py -h
 RUN curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN source "/home/mambauser/.bashrc"
 RUN source "/home/mambauser/.profile"
-ENV PATH="/home/mambauser/.juliaup/bin/julia":$PATH
-RUN ls & echo "HacktoShowLSresults"
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UnicodePlots")'
+RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UMAP")'
+RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("Conda")'
+RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("PyCall")'
 RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
-RUN ls & echo "HacktoShowLSresults"
+RUN julia -e 'println("this path will do")'
+RUN julia -e 'inlcude("UMAP_of_spikes.jl")'
