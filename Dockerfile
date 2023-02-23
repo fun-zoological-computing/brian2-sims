@@ -18,5 +18,4 @@ RUN ls & echo "HacktoShowLSresults"
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UnicodePlots")'
 RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
-RUN cat *
 RUN ls & echo "HacktoShowLSresults"
