@@ -7,6 +7,7 @@ Zurich, 2018.
 """
 
 import numpy as np
+import pickle
 
 from brian2 import run, device, second, ms, defaultclock, SpikeGeneratorGroup,\
     StateMonitor, SpikeMonitor
@@ -147,3 +148,5 @@ def stdp(args):
                    minifloat2decimal(statemon_pre_neurons.Vm[0]),
                    var_name='Vm')
         plt.savefig(f'{args.save_path}/fig5')
+with open("spikes_for_julia_read.p","wb") as f:
+    pickle.dump(f,[spikemon_pre_neurons,spikemon_post_neurons])
