@@ -11,13 +11,14 @@ COPY . .
 USER $MAMBA_USER
 RUN python run_simulation.py -h
 RUN curl -fsSL https://install.julialang.org | sh -s -- -y
-RUN source "/home/mambauser/.bashrc"
-RUN source "/home/mambauser/.profile"
+RUN python run_simulation.py --quiet --backend cpp_standalone models
+RUN ls 
+RUN /bin/bash "/home/mambauser/.bashrc"
+RUN /bin/bash "/home/mambauser/.profile"
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UnicodePlots")'
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UMAP")'
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("Conda")'
 RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("PyCall")'
-RUN python run_simulation.py --quiet --backend cpp_standalone models
 WORKDIR julia_read_dir
-RUN julia -e 'println("this path will do")'
-RUN julia -e 'inlcude("UMAP_of_spikes.jl")'
+RUN ls spikes_for_julia_read.p & echo "hack to print,assert"
+RUN /home/mambauser/.juliaup/bin/julia UMAP_of_spikes.jl
