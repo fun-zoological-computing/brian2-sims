@@ -6,7 +6,8 @@ using PyCall
 py"""
 def send_to_Julia_namespace():
   import pickle
-  try
+  try:
+    input_raster = np.load(data_folder+'input_raster.npz')
     spikes_list = pickle.load(open("../plots/spikes_for_julia_read.p","rb"))
     return (spikes_list[0],spikes_list[1])
   except:
