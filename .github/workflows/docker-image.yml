@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: docker build . --progress=plain --no-cache --tag simple_build_and_run
+      run: docker build . --progress=plain --no-cache --tag advanced_code_ideas
     - name: run the functional and generous stdp file
-      run: docker run simple_build_and_run
+      run: docker run advanced_code_ideas
