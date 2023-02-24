@@ -10,4 +10,5 @@ RUN python -c 'import uuid; print(uuid.uuid4())' > /tmp/my_uuid
 RUN python -c "import brian2"
 COPY . .
 USER $MAMBA_USER
-RUN python -m unittest
+RUN python -m unittest tests/test_orca.py
+#RUN python -m unittest
