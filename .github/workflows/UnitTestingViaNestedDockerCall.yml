@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: cp env.yaml tests; cd tests; docker build . --progress=plain --no-cache --tag unittesting_image
+      run: cp env.yaml tests; docker build tests --progress=plain --no-cache --tag unittesting_image
     - name: test the orca code file
       run: docker run unittesting_image
