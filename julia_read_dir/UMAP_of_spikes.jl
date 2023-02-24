@@ -6,7 +6,7 @@ using PyCall
 py"""
 def send_to_Julia_namespace():
   import pickle
-  spikes_list = pickle.load("spikes_for_julia_read.p","rb")
+  spikes_list = pickle.load(open("spikes_for_julia_read.p","rb"))
   return (spikes_list[0],spikes_list[1])
 """
 
