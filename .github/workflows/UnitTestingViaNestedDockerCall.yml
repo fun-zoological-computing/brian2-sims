@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Build the Docker image
-      run: cd tests & docker build . --progress=plain --no-cache --tag simple_build_and_run
+      run: cd tests; docker build . --progress=plain --no-cache --tag unittesting_image
     - name: run the functional and generous stdp file
-      run: docker run simple_build_and_run
+      run: docker run unittesting_image
