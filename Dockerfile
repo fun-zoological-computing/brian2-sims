@@ -22,3 +22,5 @@ RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("PyCall")'
 WORKDIR julia_read_dir
 RUN ls spikes_for_julia_read.p & echo "hack to print,assert"
 RUN /home/mambauser/.juliaup/bin/julia UMAP_of_spikes.jl
+
+RUN python -m unittest tests/test_orca.py
