@@ -8,9 +8,12 @@ from simulations.balanced_network import balanced_network
 import os
 from datetime import datetime
 
+<<<<<<< HEAD
 import sys
 sys.path.extend(os.getcwd())
 
+=======
+>>>>>>> 0acc20c0d4ed8a04bed752460dbf731d9d5820da
 import argparse
 from brian2 import DEFAULT_FUNCTIONS, prefs, set_device, ms
 
