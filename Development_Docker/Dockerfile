@@ -15,10 +15,7 @@ RUN python run_simulation.py --quiet --backend cpp_standalone models
 RUN ls 
 RUN /bin/bash "/home/mambauser/.bashrc"
 RUN /bin/bash "/home/mambauser/.profile"
-RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UnicodePlots")'
-RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("UMAP")'
-RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("Conda")'
-RUN /home/mambauser/.juliaup/bin/julia -e 'using Pkg;Pkg.add("PyCall")'
+RUN /home/mambauser/.juliaup/bin/julia setup.jl
 WORKDIR julia_read_dir
 RUN ls spikes_for_julia_read.p & echo "hack to print,assert"
 RUN /home/mambauser/.juliaup/bin/julia UMAP_of_spikes.jl
