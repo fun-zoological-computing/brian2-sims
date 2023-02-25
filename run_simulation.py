@@ -7,8 +7,6 @@ from simulations.balanced_network import balanced_network
 
 import os
 from datetime import datetime
-
-
 import argparse
 from brian2 import DEFAULT_FUNCTIONS, prefs, set_device, ms
 
