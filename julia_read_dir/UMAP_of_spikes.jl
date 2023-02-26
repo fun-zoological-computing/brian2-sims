@@ -8,6 +8,24 @@ using UMAP
 using StatsBase, StatsPlots, Distributions
 using MultivariateStats
 
+using Conda
+using PyCall
+
+py"""
+def send_to_Julia_namespace():
+  import pickle
+  try:
+    input_raster = np.load(data_folder+'input_raster.npz')
+    spikes_list = pickle.load(open("../plots/spikes_for_julia_read.p","rb"))
+    return (spikes_list[0],spikes_list[1])
+  except:
+    return (None,None)
+"""
+
+(spikes_list0,spikes_list1) = py"send_to_Julia_namespace"()
+@show(spikes_list0)
+@show(spikes_list1)
+
 
 hf5 = h5open("spikes.h5","r")
 nodes = Vector{Int64}(read(hf5["spikes"]["v1"]["node_ids"]))
