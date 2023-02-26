@@ -1,7 +1,4 @@
 
-using UMAP
-using Conda
-using PyCall
 using HDF5
 using Plots
 using StatsBase
@@ -16,28 +13,12 @@ using UMAP
 using StatsBase, StatsPlots, Distributions
 using MultivariateStats
 
-py"""
-def send_to_Julia_namespace():
-  import pickle
-  try:
-    input_raster = np.load(data_folder+'input_raster.npz')
-    spikes_list = pickle.load(open("../plots/spikes_for_julia_read.p","rb"))
-    return (spikes_list[0],spikes_list[1])
-  except:
-    return (None,None)
-"""
-
-(spikes_list0,spikes_list1) = py"send_to_Julia_namespace"()
-@show(spikes_list0)
-@show(spikes_list1)
-
-
 
 hf5 = h5open("output/spikes.h5","r")
 nodes = Vector{Int64}(read(hf5["spikes"]["v1"]["node_ids"]))
 times = Vector{Float64}(read(hf5["spikes"]["v1"]["timestamps"]))
-
 close(hf5)
+
 function raster(nodes,times)
     xs = []
     ys = []
@@ -47,7 +28,7 @@ function raster(nodes,times)
     end
     size = (800,600)
     p0 = Plots.plot(;size,leg=false,title="spike train",grid=false)
-    scatter(p0,xs,ys;label="SpikeTrain",markershape=:vline,markersize=ms,markerstrokewidth = 0.5)
+    scatter(p0,xs,ys;label="SpikeTrain",markershape=:vline,markersize=ms,mc="black",markerstrokewidth = 0.5)
     savefig("Better_Spike_Rastery.png")
 end
 
@@ -59,7 +40,7 @@ function raster(nodes,times)
     size = (800,600)
     p0 = Plots.plot(;size,leg=false,title="spike train",grid=false)
     markersize=0.0001#ms
-    scatter(p0,times,nodes;label="SpikeTrain",markershape=:vline,markerstrokewidth = 0.00015)
+    scatter(p0,times,nodes;label="SpikeTrain",markershape=:vline,mc="black",markerstrokewidth = 0.00015)
     savefig("Better_Spike_Rastery.png")
 end
 
@@ -70,7 +51,7 @@ function PSTH0(nodes,times)
     bins = collect(1:bin_size:temp)
     markersize=0.001#ms
     l = @layout [a ; b]
-    p1 = scatter(times,nodes;bin=bins,label="SpikeTrain",markershape=:vline,markerstrokewidth = 0.015, legend = false)
+    p1 = scatter(times,nodes;bin=bins,label="SpikeTrain",markershape=:vline,markerstrokewidth = 0.015,mc="black", legend = false)
     p2 = plot(stephist(times, title="PSTH", legend = false))
     size_ = (800,600)
     Plots.plot(p1, p2, layout = l,size=size_) 
@@ -216,7 +197,7 @@ data = bespoke_2dhist(nbins,nodes,times)
 data,res_jl = bespoke_PCA(nbins,nodes,times)
 
 
-function dontdo(data,nbins)
+function slow_to_exec(data,nbins)
     corrplot_(data)
     histogram2d(data,nbins=nbins,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
     Plots.savefig("detailed_hist_map.png")
@@ -225,4 +206,4 @@ nbins = 100.0
 data = bespoke_2dhist(nbins,nodes,times)
 
 println("slow")
-dontdo(data,nbins)
+slow_to_exec(data,nbins)
