@@ -1,12 +1,7 @@
-
 using HDF5
 using Plots
-using StatsBase
 using Random
 using Revise
-using ProgressMeter
-using StatsPlots
-using StatsBase, StatsPlots, Distributions
 using ProgressMeter
 using StatsPlots
 using UMAP
@@ -18,7 +13,7 @@ hf5 = h5open("output/spikes.h5","r")
 nodes = Vector{Int64}(read(hf5["spikes"]["v1"]["node_ids"]))
 times = Vector{Float64}(read(hf5["spikes"]["v1"]["timestamps"]))
 close(hf5)
-
+#println("gets here a")
 function raster(nodes,times)
     xs = []
     ys = []
@@ -47,7 +42,7 @@ end
 
 function PSTH0(nodes,times)
     temp = size(nodes)[1]
-    bin_size = 55 # ms
+    bin_size = 5 # ms
     bins = collect(1:bin_size:temp)
     markersize=0.001#ms
     l = @layout [a ; b]
@@ -99,11 +94,7 @@ function filter(nodes,times)
     savefig("PSTH_reduced.png")
     return (n_,t_)
 end
-function corrplot_(data)
 
-    StatsPlots.corrplot(data)
-    savefig("corrplot.png")
-end
 function bespoke_umap(nbins,nodes,times)
     stimes = sort(times)
     ns = maximum(unique(nodes))
@@ -167,7 +158,7 @@ function bespoke_PCA(nbins,nodes,times)
     return data,Yte
 end
 
-function bespoke_2dhist(nbins,nodes,times)
+function bespoke_2dhist(nbins,nodes,times,fname=nothing)
     stimes = sort(times)
     ns = maximum(unique(nodes))    
     temp_vec = collect(0:Float64(maximum(stimes)/nbins):maximum(stimes))
@@ -183,27 +174,41 @@ function bespoke_2dhist(nbins,nodes,times)
         psth = fit(Histogram,t,temp_vec)
         data[ind,:] = psth.weights[:]
     end
-    Plots.plot(heatmap(data),legend = false, normalize=:pdf)
-    Plots.savefig(nbins+"detailed_heatmap.png")
     return data
 end
-(n_,t_) = filter(nodes,times)
+#println("Delayed y")
+
+#(n_,t_) = filter(nodes,times)
 PSTH0(nodes,times) 
-PSTHMap0(nodes,times)
-PSTHMap1(nodes,times)
+println("Delayed 0")
 nbins = 425.0
 data,res_jl = bespoke_umap(nbins,nodes,times)
+Plots.plot(heatmap(data),legend = false, normalize=:pdf)
+Plots.savefig("detailed_heatmap.png")
+
+println("Delayed 1")
+nbins = 1425.0
 data = bespoke_2dhist(nbins,nodes,times)
+println("Delayed 2")
+
 data,res_jl = bespoke_PCA(nbins,nodes,times)
 
-
-function slow_to_exec(data,nbins)
-    corrplot_(data)
-    histogram2d(data,nbins=nbins,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
-    Plots.savefig("detailed_hist_map.png")
+function corrplot_(data)
+    StatsPlots.corrplot(data[1:5,1:5], grid = false, compact=true)
+    savefig("corrplot.png")
 end
-nbins = 100.0
-data = bespoke_2dhist(nbins,nodes,times)
+function slow_to_exec(data,nbins)
 
-println("slow")
-slow_to_exec(data,nbins)
+    corrplot_(data)
+    data = data'[:,:]
+
+    StatsPlots.histogram2d(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
+    Plots.savefig("detailed_hist_map.png")
+    StatsPlots.marginalhist(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
+    Plots.savefig("marginal_kde_detailed_hist_map.png")
+    StatsPlots.marginalkde(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
+    Plots.savefig("marginal_ruggs_detailed_hist_map.png")
+end
+nbins = 425.0
+data = bespoke_2dhist(nbins,nodes,times)
+#slow_to_exec(data,nbins)
