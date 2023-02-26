@@ -13,6 +13,7 @@ hf5 = h5open("output/spikes.h5","r")
 nodes = Vector{Int64}(read(hf5["spikes"]["v1"]["node_ids"]))
 times = Vector{Float64}(read(hf5["spikes"]["v1"]["timestamps"]))
 close(hf5)
+#println("gets here a")
 function raster(nodes,times)
     xs = []
     ys = []
@@ -51,7 +52,25 @@ function PSTH0(nodes,times)
     Plots.plot(p1, p2, layout = l,size=size_) 
     savefig("PSTH.png")
 
+    #savefig("PSTH.png")
+
 end
+#=
+function PSTH(nodes,times)
+    #temp = size(nodes)[1]
+    bin_size = 55 # ms
+    bins = collect(1:bin_size:maximum(times))
+    markersize=0.001#ms
+    l = @layout [a ; b]
+    p1 = scatter(times,nodes;bin=bins,label="SpikeTrain",markershape=:vline,markerstrokewidth = 0.015, legend = false)
+    p2 = plot(stephist(times, title="PSTH", legend = false))
+    size_ = (800,600)
+
+    Plots.plot(p1, p2, layout = l,size=size_)
+    savefig("PSTH.png")
+
+end
+=#
 
 function filter(nodes,times)
     n_ = []
@@ -76,7 +95,8 @@ function filter(nodes,times)
     return (n_,t_)
 end
 
-function bespoke_umap(nbins,nodes,times)
+function bespoke_umap(data)
+    #=
     stimes = sort(times)
     ns = maximum(unique(nodes))
     temp_vec = collect(0:Float64(round(maximum(stimes)/nbins)):maximum(stimes))
@@ -92,6 +112,7 @@ function bespoke_umap(nbins,nodes,times)
         psth = fit(Histogram,t,temp_vec)
         data[ind,:] = psth.weights[:]
     end
+    =#
     ##
     # Assuming 3 EEG
     ##
@@ -105,7 +126,8 @@ function bespoke_umap(nbins,nodes,times)
     Plots.savefig("UMAP_for_pablo_transpose.png")
     return data,res_jl
 end
-function bespoke_PCA(nbins,nodes,times)
+function bespoke_PCA(data)
+    #=
     stimes = sort(times)
     ns = maximum(unique(nodes))
     temp_vec = collect(0:Float64(round(maximum(stimes)/nbins)):maximum(stimes))
@@ -121,6 +143,7 @@ function bespoke_PCA(nbins,nodes,times)
         psth = fit(Histogram,t,temp_vec)
         data[ind,:] = psth.weights[:]
     end
+    =#
     # Assuming 3 EEG
     ##
     #n_components = 3
@@ -158,32 +181,60 @@ function bespoke_2dhist(nbins,nodes,times,fname=nothing)
     return data
 end
 
-(n_,t_) = filter(nodes,times)
+
+function normalised_2dhist(data)
+
+    data = data[:,:]./maximum(data[:,:])
+    return data
+end
+#println("Delayed y")
+
+#(n_,t_) = filter(nodes,times)
 PSTH0(nodes,times) 
-nbins = 425.0
-data,res_jl = bespoke_umap(nbins,nodes,times)
-Plots.plot(heatmap(data),legend = false, normalize=:pdf)
-Plots.savefig("detailed_heatmap.png")
+nbins = 325.0
+
+datan = normalised_2dhist(data)
+Plots.plot(heatmap(datan),legend = false, normalize=:pdf)
+Plots.savefig("detailed_heatmap_normalised.png")
 
 nbins = 1425.0
 data = bespoke_2dhist(nbins,nodes,times)
+_,res_jl = bespoke_umap(data)
+Plots.plot(heatmap(data),legend = false, normalize=:pdf)
+Plots.savefig("detailed_heatmap.png")
 
-data,res_jl = bespoke_PCA(nbins,nodes,times)
+#nbins = 1425.0
+#nbins = 2425.0
+#nbins = 1425.0
+#nbins = 1425.0
+#nbins = 325.0
+
+nbins = 100
+
+data = bespoke_2dhist(nbins,nodes,times)
+#println("Delayed 2")
+
+data,res_jl = bespoke_PCA(data)
 
 function corrplot_(data)
     StatsPlots.corrplot(data[1:5,1:5], grid = false, compact=true)
     savefig("corrplot.png")
 end
 function slow_to_exec(data,nbins)
+
     corrplot_(data)
+    
+    #=
     data = data'[:,:]
+
     StatsPlots.histogram2d(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
     Plots.savefig("detailed_hist_map.png")
     StatsPlots.marginalhist(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
     Plots.savefig("marginal_kde_detailed_hist_map.png")
     StatsPlots.marginalkde(data,show_empty_bins=true, normalize=:pdf,color=:inferno)#,bins=bins)
     Plots.savefig("marginal_ruggs_detailed_hist_map.png")
+    =#
 end
 nbins = 425.0
 data = bespoke_2dhist(nbins,nodes,times)
-#slow_to_exec(data,nbins)
+slow_to_exec(data,nbins)
