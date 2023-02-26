@@ -9,7 +9,7 @@ using StatsBase, StatsPlots, Distributions
 using MultivariateStats
 
 
-hf5 = h5open("output/spikes.h5","r")
+hf5 = h5open("spikes.h5","r")
 nodes = Vector{Int64}(read(hf5["spikes"]["v1"]["node_ids"]))
 times = Vector{Float64}(read(hf5["spikes"]["v1"]["timestamps"]))
 close(hf5)
@@ -167,17 +167,20 @@ function bespoke_2dhist(nbins,nodes,times,fname=nothing)
     ns = maximum(unique(nodes))    
     temp_vec = collect(0:Float64(maximum(stimes)/nbins):maximum(stimes))
     templ = []
-    for (cnt,n) in enumerate(unique(nodes))
+    for (cnt,n) in enumerate(collect(1:maximum(nodes)+1))
         push!(templ,[])
     end
     for (cnt,n) in enumerate(nodes)
+
         push!(templ[n+1],times[cnt])    
+        #@show(templ[n+1])
     end
-    data = Matrix{Float64}(undef, ns+1, Int(length(temp_vec)-1))
+    data = sparse(Matrix{Float64}(undef, ns+1, Int(length(temp_vec)-1)))
     for (ind,t) in enumerate(templ)
         psth = fit(Histogram,t,temp_vec)
         data[ind,:] = psth.weights[:]
     end
+    #data = sparse(data)
     return data
 end
 
@@ -191,11 +194,12 @@ end
 
 #(n_,t_) = filter(nodes,times)
 PSTH0(nodes,times) 
-nbins = 325.0
-
+nbins = 425.0
+#nbins = 1425.0
+data = bespoke_2dhist(nbins,nodes,times)
 datan = normalised_2dhist(data)
 Plots.plot(heatmap(datan),legend = false, normalize=:pdf)
-Plots.savefig("detailed_heatmap_normalised.png")
+Plots.savefig("heatmap_normalised.png")
 
 nbins = 1425.0
 data = bespoke_2dhist(nbins,nodes,times)
