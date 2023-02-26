@@ -1,1 +1,10 @@
-
+using Pkg
+Pkg.add("HDF5")
+Pkg.add("Plots")
+Pkg.add("Random")
+Pkg.add("Revise")
+Pkg.add("ProgressMeter")
+Pkg.add("StatsPlots")
+Pkg.add("UMAP")
+Pkg.add("StatsBase, StatsPlots, Distributions")
+Pkg.add("MultivariateStats")
