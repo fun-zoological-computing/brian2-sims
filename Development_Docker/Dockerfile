@@ -10,14 +10,9 @@ RUN python -c "import brian2"
 COPY . .
 USER $MAMBA_USER
 RUN python run_simulation.py -h
-RUN curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN python run_simulation.py --quiet --backend cpp_standalone models
-RUN ls 
-RUN /bin/bash "/home/mambauser/.bashrc"
-RUN /bin/bash "/home/mambauser/.profile"
+RUN python -m unittest tests/test_orca.py
+RUN curl -fsSL https://install.julialang.org | sh -s -- -y
 RUN /home/mambauser/.juliaup/bin/julia setup.jl
 WORKDIR julia_read_dir
-RUN ls spikes_for_julia_read.p & echo "hack to print,assert"
 RUN /home/mambauser/.juliaup/bin/julia UMAP_of_spikes.jl
-
-RUN python -m unittest tests/test_orca.py
